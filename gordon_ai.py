@@ -67,7 +67,7 @@ def generate_response(prompt, history):
     return response.choices[0].message.content.strip()
 
 # Main app
-st.title("Gordon AI™ ")
+st.title("Gordon AI™ -  I am the AI twin of Fitness trainer 💪 Gordon")
 
 # Create two columns for input and response
 input_col, response_col = st.columns(2)
@@ -117,7 +117,7 @@ st.markdown(
         color: #808080;
         text-align: center;
         padding: 10px;
-        font-size: 12px;
+        font-size: 14px;
     }
     </style>
     <div class="footer">
