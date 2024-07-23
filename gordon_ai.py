@@ -1,4 +1,4 @@
-# Copyright 2024 Anaptics | qnaptics@gmail.com 
+# Copyright 2024 Qnaptics | qnaptics@gmail.com 
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -93,14 +93,6 @@ if user_input:
         st.error(f"An error occurred: {str(e)}")
         print(f"Error details: {e}")  # For debugging
 
-# Display last two messages with the most recent on top
-#if len(st.session_state.messages) > 0:
-#    for message in reversed(st.session_state.messages[-4:]):  # Display last 4 messages
-#        if message["role"] == "User":
-#            st.write("You:", message["content"])
-#        else:
-#            st.write("Assistant:", message["content"])
-
 with response_col:
     st.subheader("🤖 Gordon AI™ Responses")
     # Display last two messages with the most recent on top
@@ -110,4 +102,28 @@ with response_col:
                 st.write("📝 You:", message["content"])
             else:
                 st.write("🔥 Gordon AI™:", message["content"])
+
+
+# Add this at the end of your app
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: transparent;
+        color: #808080;
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+    }
+    </style>
+    <div class="footer">
+        Conceptualized and designed by <a href="mailto:qnaptics@gmail.com">qnaptics@gmail.com</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
