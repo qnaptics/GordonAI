@@ -12,13 +12,27 @@ client = OpenAI(
 # Set page title and layout
 st.set_page_config(page_title="💡Gordon AI™ - Fitness Assistant", layout="wide")
 
-# Initialize session state for message history
+# Initialize session state for message history and recent training sessions
 if "messages" not in st.session_state:
     st.session_state.messages = []
+
+# Recent training sessions
+recent_sessions = {
+    "": "",  # Blank user as default
+    "Tina": "Strength Training",
+    "Maya": "Cardio",
+    "Jason": "CrossFit",
+    "Ella": "Cycling",
+    "Tim": "Boxing",
+    "Dorothy": "Zumba"
+}
 
 # Sidebar content
 st.sidebar.title("🧠 Gordon AI™ Settings")
 st.sidebar.write("Customize your AI fitness assistant experience")
+
+# User selection in sidebar
+selected_user = st.sidebar.selectbox("Select a user:", list(recent_sessions.keys()))
 
 # LLM Settings
 st.sidebar.subheader("LLM Settings")
@@ -65,21 +79,37 @@ def generate_response(prompt, history):
 
     return response.choices[0].message.content.strip()
 
-# Chat input
-user_input = st.text_input("Ask Gordon AI about fitness, exercises, or schedule an appointment...")
+# Function to suggest recovery routine
+def suggest_recovery_routine(name, exercise):
+    recovery_prompt = f"Suggest a recovery routine for {name} who recently did {exercise}. Include stretching, nutrition, and rest recommendations."
+    return generate_response(recovery_prompt, [])
 
-if user_input:
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    
-    # Generate AI response
-    ai_response = generate_response(user_input, st.session_state.messages)
-    
-    # Add AI response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": ai_response})
-    
-    # Clear the input box
-    st.experimental_rerun()
+# Chat input
+user_input = st.text_input("Ask Gordon AI about fitness, exercises, or recovery...")
+
+if st.button("Send"):
+    if user_input:
+        # Add user message to chat history
+        full_input = f"{selected_user}: {user_input}" if selected_user else user_input
+        st.session_state.messages.append({"role": "user", "content": full_input})
+        
+        # Check if the user is asking about recovery
+        if "recover" in user_input.lower() and selected_user:
+            exercise = recent_sessions[selected_user]
+            if exercise:
+                recovery_routine = suggest_recovery_routine(selected_user, exercise)
+                ai_response = f"Hello {selected_user}! Here's a recovery routine based on your recent {exercise} session:\n\n{recovery_routine}"
+            else:
+                ai_response = f"I'm sorry, {selected_user}. I don't have information about your recent training session. Please provide more details about your workout, and I'll suggest a recovery routine."
+        else:
+            # Generate AI response for other queries
+            ai_response = generate_response(full_input, st.session_state.messages)
+        
+        # Add AI response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": ai_response})
+        
+        # Rerun to update the chat display
+        st.experimental_rerun()
 
 # Additional features
 st.markdown("---")
